@@ -1,16 +1,46 @@
 {
-  "name": "tech-symposium-api",
-  "version": "0.0.0",
-  "private": true,
+  "name": "amber-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node ./bin/www"
+    "server": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
+    "dev": "nodemon server.js"
   },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
-    "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
-    "morgan": "~1.9.1"
+    "@aws-sdk/client-s3": "^3.637.0",
+    "@aws-sdk/lib-storage": "^3.616.0",
+    "@aws-sdk/s3-request-presigner": "^3.637.0",
+    "@ilovepdf/ilovepdf-nodejs": "^0.3.0",
+    "aws-sdk": "^2.1683.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "chalk": "^5.3.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "fs-extra": "^11.2.0",
+    "ilovepdf-sdk": "^0.0.5",
+    "jsonwebtoken": "^9.0.2",
+    "libreoffice-convert": "^1.6.0",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.5.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "multer-s3": "^3.0.1",
+    "nodemailer": "^6.9.14",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "pug": "^3.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }

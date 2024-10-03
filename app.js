@@ -1,41 +1,43 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+import express from "express";
+import cookieParser from "cookie-parser";
+import chalk from "chalk";
+import cors from "cors"; // Import cors
+import connectToDB from "./DB/connectToDB.js";
+import dotenv from "dotenv";
+dotenv.config();
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+import UserRouter from "./routes/UserRoutes.js";
 
-var app = express();
+const PORT = process.env.PORT || 5000;
+const app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-app.use(logger('dev'));
+// CORS setup to allow requests from frontend React app
+// app.use(
+//   cors({
+//     origin: "http://localhost:3000", // Replace with the React app's URL if different
+//     credentials: true, // Enable credentials if needed (for cookies, etc.)
+//   })
+// );
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use("/signup", UserRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.get("/", (req, res) => {
+  res.json({ message: "Hello from Project server" });
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.listen(PORT, () => {
+  connectToDB()
+    .then(() => {
+      console.log(chalk.blueBright(`Server Running on port ${PORT}`));
+    })
+    .catch((error) => {
+      console.error(chalk.red("Failed to connect to MongoDB:", error.message));
+      process.exit(1);
+    });
 });
 
-module.exports = app;
+export default app;
