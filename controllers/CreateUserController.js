@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import UserSchema from "../models/UserModel.js";
 
 const CreateUser  = async (req,res)=>{
-    const {name,email,password,phone} = req.body;
+    const { name, email, password, mobile } = req.body;
     try{
         const existingClerk = await UserSchema.findOne({
             email
@@ -13,11 +13,11 @@ const CreateUser  = async (req,res)=>{
             return res.status(400).json({msg:"User Already Exists"})
         }
         const newUser = new UserSchema({
-            name,
-            email,
-            phone,
-            password
-        })
+          name,
+          email,
+          mobile,
+          password,
+        });
         await newUser.save();
 
         const token = jwt.sign({
