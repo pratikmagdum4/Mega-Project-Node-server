@@ -1,6 +1,6 @@
 
 import jwt from "jsonwebtoken";
-import UserSchema from "../models/UserModel.js";
+import {UserSchema} from "../models/UserModel.js";
 
 const CreateUser  = async (req,res)=>{
     const { name, email, password, mobile } = req.body;

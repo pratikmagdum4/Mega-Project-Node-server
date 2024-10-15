@@ -11,4 +11,13 @@ const UserSchema = mongoose.model(
     "UserModel",
     userSchema
 )
-export default UserSchema;
+
+const userSchemaData = new mongoose.Schema({
+  Entries: { type: String, default: "" },
+  
+
+});
+const UserSchemaDAta = mongoose.model("UserDAtaModel", userSchema);
+
+
+export { UserSchemaDAta,UserSchema};
