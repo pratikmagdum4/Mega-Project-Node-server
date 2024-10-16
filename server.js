@@ -18,9 +18,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use("/signup", Signup);
+app.use("/api", Signup);
 app.use("/login", Login);
-app.get("/", (req, res) => {
+app.get("/journal", (req, res) => {
   res.json({ message: "Hello from Project server" });
 });
 

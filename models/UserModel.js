@@ -12,12 +12,26 @@ const UserSchema = mongoose.model(
     userSchema
 )
 
-const userSchemaData = new mongoose.Schema({
-  Entries: { type: String, default: "" },
-  
-
+const JournalEntrySchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // Assuming you have a User model
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now, // Default to the current date
+  },
+  multimedia: {
+    type: String, // URL or path to multimedia file (optional)
+  },
 });
-const UserSchemaDAta = mongoose.model("UserDAtaModel", userSchema);
+
+const JournalEntry = mongoose.model("JournalEntry", JournalEntrySchema);
 
 
-export { UserSchemaDAta,UserSchema};
+export { JournalEntry, UserSchema };
