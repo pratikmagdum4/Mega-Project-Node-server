@@ -12,6 +12,11 @@ import Login from "./routes/LoginRoute.js";
 const PORT = process.env.PORT || 5000;
 const app = express();
 
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Replace with your React app's origin
+  })
+);
 
 app.use(cors());
 app.use(express.json());
@@ -19,11 +24,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api", Signup);
-app.use("/login", Login);
-app.get("/journal", (req, res) => {
-  res.json({ message: "Hello from Project server" });
-});
-
+app.use("/api", Login);
+app.use("/api/journal", Signup)
 
 
 app.listen(PORT, () => {

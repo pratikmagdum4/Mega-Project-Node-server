@@ -1,9 +1,11 @@
 import {UserSchema} from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+
+
 const UserLogin = async (req, res) => {
   const { email, password } = req.body;
-
+console.log("values are",email ,password)
   try {
     const user = await UserSchema.findOne({ email });
     if (!user) {
@@ -18,7 +20,7 @@ const UserLogin = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-    const role = "clerk";
+    const role = "user";
     console.log("i got here ");
     res.status(200).json({ result: user, token, role });
   } catch (error) {
