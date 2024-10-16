@@ -89,30 +89,26 @@ console.log("THe values are",userId,content,multimedia)
       .json({ message: "Error adding journal entry.", error });
   }
 };
-
 const getEntryOnDate = async (req, res) => {
   try {
-    // Access date and userId from query parameters (adjusted based on assumption)
     const { date, userId } = req.query;
-
+console.log("The date is",date)
     if (!date || !userId) {
-      return res
-        .status(400)
-        .json({ error: "Missing required parameters: date and userId" });
+      return res.status(400).json({ error: "Missing required parameters: date and userId" });
     }
 
-    // Format date for MongoDB query if necessary (adapt if date format is already compatible)
-    const formattedDate = new Date(date); // Assuming date is sent in YYYY-MM-DD format
+    // Parse the date and set time to start and end of the day (in UTC)
+    const formattedDate = new Date(date); // Assuming 'date' is sent as 'YYYY-MM-DD'
+console.log("date",formattedDate )
+    // Start of the day in UTC
+    const startDate = new Date(formattedDate.setUTCHours(0, 0, 0, 0));
+    // End of the day in UTC
+    const endDate = new Date(formattedDate.setUTCHours(23, 59, 59, 999));
 
-    // Assuming date is stored in ISO 8601 format in the database
-    const startDate = new Date(formattedDate.toISOString().split("T")[0]);
-    const endDate = new Date(
-      formattedDate.toISOString().split("T")[0] + "T23:59:59.999Z"
-    );
-
+    // Query the database for entries within this day range
     const entries = await JournalEntry.find({
       userId,
-      date: { $gte: startDate, $lte: endDate }, // Use date range for precise matching
+      date: { $gte: startDate, $lte: endDate },
     });
 
     res.status(200).json(entries);
@@ -121,4 +117,6 @@ const getEntryOnDate = async (req, res) => {
     res.status(500).json({ error: "Error fetching entries" });
   }
 };
+
+
 export { CreateUser, addJournalEntry, getEntryOnDate };
