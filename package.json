@@ -4,8 +4,8 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "server": "nodemon src/app.js",
-    "start": "node src/app.js",
+    "server": "nodemon src/server.js",
+    "start": "node src/server.js",
     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
     "dev": "nodemon server.js"
   },
