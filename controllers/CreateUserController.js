@@ -92,14 +92,14 @@ console.log("THe values are",userId,content,multimedia)
 const getEntryOnDate = async (req, res) => {
   try {
     const { date, userId } = req.query;
-console.log("The date is",date)
+// console.log("The date is",date)
     if (!date || !userId) {
       return res.status(400).json({ error: "Missing required parameters: date and userId" });
     }
 
     // Parse the date and set time to start and end of the day (in UTC)
     const formattedDate = new Date(date); // Assuming 'date' is sent as 'YYYY-MM-DD'
-console.log("date",formattedDate )
+// console.log("date",formattedDate )
     // Start of the day in UTC
     const startDate = new Date(formattedDate.setUTCHours(0, 0, 0, 0));
     // End of the day in UTC
@@ -116,7 +116,63 @@ console.log("date",formattedDate )
     console.error("Error fetching entries:", error);
     res.status(500).json({ error: "Error fetching entries" });
   }
+};const getAllEntries = async (req, res) => {
+  const { id } = req.params;
+  console.log("hi id is", id);
+
+  try {
+    let entries;
+
+    if (id) {
+      // Fetch entries by userId, the filter must be an object
+      entries = await JournalEntry.find({ userId: id }); // Correct filter format: { userId: id }
+      console.log("The entries by userId", entries);
+
+      if (!entries || entries.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No entries found for this user" });
+      }
+    } else {
+      // Fetch all journal entries
+      entries = await JournalEntry.find();
+    }
+
+    // Extract content and date from the entries
+    let formattedEntries;
+
+    if (Array.isArray(entries)) {
+      formattedEntries = entries.map((entry) => ({
+        content: entry.content,
+        date: entry.date,
+      }));
+    } else {
+      formattedEntries = {
+        content: entries.content,
+        date: entries.date,
+      };
+    }
+console.log("The formated",formattedEntries)
+    // You can attach a question here if needed (example question)
+    const question = "Can you provide insights based on this journal entry?";
+
+    // Prepare the data to send to Google API
+    const dataToSend = {
+      question,
+      entries: formattedEntries,
+    };
+
+    // For now, log the data to send
+    console.log("Data to send to Google API", dataToSend);
+
+    // Respond with the formatted entries
+    res.status(200).json(formattedEntries);
+  } catch (error) {
+    console.error("Error fetching entries:", error);
+    res.status(500).json({ message: "Error fetching entries", error });
+  }
 };
 
 
-export { CreateUser, addJournalEntry, getEntryOnDate };
+
+export { CreateUser, addJournalEntry, getEntryOnDate,getAllEntries };
