@@ -25,8 +25,10 @@ const AddTask = async (req, res) => {
 
 const GetallTasks = async (req, res) => {
   console.log("inside task get")
+  const {id} = req.params;
+  console.log("The id is ",id)
   try {
-    const tasks = await UserTasks.find({ userID: req.params.userID }).sort({
+    const tasks = await UserTasks.find({ userID: id }).sort({
       dateTime: -1,
     });
     console.log("the tasks list is ",tasks)
