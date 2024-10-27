@@ -1,0 +1,5 @@
+# VITE_API_BASE_URL=https://dkte-ambar-api-pratikmagdum4.onrender.com
+VITE_API_BASE_URL=https://mega-project-node-server.onrender.com
+
+VITE_UI_BASE_URL=https://dkte-amber-website.vercel.app
+VITE_API_GENERATIVE_LANGUAGE_CLIENT=AIzaSyBWSfqtRa1TYbgb4g6GUbhUMzP1NVwRSkM
