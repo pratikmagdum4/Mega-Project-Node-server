@@ -9,6 +9,8 @@ dotenv.config();
 import Signup from "./routes/UserRoutes.js";
 import Login from "./routes/LoginRoute.js";
 import Tasks from "./routes/TaskRoutes.js"
+import Goals from "./routes/GoalRoutes.js"
+
 const PORT = process.env.PORT || 5000;
 const app = express();
 
@@ -48,6 +50,7 @@ app.use("/api", Signup);
 app.use("/api", Login);
 app.use("/api/journal", Signup);
 app.use("/api/tasks", Tasks);
+app.use("/user", Goals);
 
 // Start the server and connect to the database
 app.listen(PORT, () => {
