@@ -9,17 +9,14 @@ const CreateUser = async (req, res) => {
   if (!name || !email || !password || !mobile) {
     return res.status(400).json({ msg: "Please fill in all fields" });
   }
-  console.log("The values 1", name, email, password, mobile);
 
   try {
     // Check for existing user
     const existingClerk = await UserSchema.findOne({ email });
-    console.log("exist is ", existingClerk);
     if (existingClerk) {
       return res.status(400).json({ msg: "User Already Exists" });
     }
     console.log(existingClerk);
-    console.log("The values", name, email, password, mobile);
 
     // Convert mobile number to string before saving (backend)
     const mobileAsString = mobile.toString();
@@ -59,7 +56,6 @@ const CreateUser = async (req, res) => {
 };
 const addJournalEntry = async (req, res) => {
   const { userId, content, multimedia } = req.body;
-console.log("THe values are",userId,content,multimedia)
   // Validate required fields
   if (!userId || !content) {
     return res
@@ -118,7 +114,7 @@ const getEntryOnDate = async (req, res) => {
   }
 };const getAllEntries = async (req, res) => {
   const { id } = req.params;
-  console.log("hi id is", id);
+  // console.log("hi id is", id);
 
   try {
     let entries;
@@ -126,7 +122,7 @@ const getEntryOnDate = async (req, res) => {
     if (id) {
       // Fetch entries by userId, the filter must be an object
       entries = await JournalEntry.find({ userId: id }); // Correct filter format: { userId: id }
-      console.log("The entries by userId", entries);
+      // console.log("The entries by userId", entries);
 
       if (!entries || entries.length === 0) {
         return res
@@ -152,7 +148,6 @@ const getEntryOnDate = async (req, res) => {
         date: entries.date,
       };
     }
-console.log("The formated",formattedEntries)
     // You can attach a question here if needed (example question)
     const question = "Can you provide insights based on this journal entry?";
 
@@ -163,7 +158,7 @@ console.log("The formated",formattedEntries)
     };
 
     // For now, log the data to send
-    console.log("Data to send to Google API", dataToSend);
+    // console.log("Data to send to Google API", dataToSend);
 
     // Respond with the formatted entries
     res.status(200).json(formattedEntries);
