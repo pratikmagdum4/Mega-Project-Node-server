@@ -5,6 +5,7 @@ const goalSchema = new mongoose.Schema({
   goalCategory: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   questions: [{ type: String }],
+  Done:[{type:Boolean}]
 });
 
 const Goals = mongoose.model("Goals",goalSchema);

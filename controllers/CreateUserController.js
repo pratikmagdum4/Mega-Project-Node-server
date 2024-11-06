@@ -1,6 +1,7 @@
 
 import jwt from "jsonwebtoken";
-import { UserSchema, JournalEntry } from "../models/UserModel.js";
+import { UserSchema, JournalEntry,  } from "../models/UserModel.js";
+import { DayEntry } from "../models/UserModel.js";
 import bcrypt from "bcryptjs";
 const CreateUser = async (req, res) => {
   const { name, email, password, mobile } = req.body;
@@ -120,9 +121,8 @@ const getEntryOnDate = async (req, res) => {
     let entries;
 
     if (id) {
-      // Fetch entries by userId, the filter must be an object
-      entries = await JournalEntry.find({ userId: id }); // Correct filter format: { userId: id }
-      // console.log("The entries by userId", entries);
+     
+      entries = await JournalEntry.find({ userId: id }); 
 
       if (!entries || entries.length === 0) {
         return res
@@ -130,11 +130,11 @@ const getEntryOnDate = async (req, res) => {
           .json({ message: "No entries found for this user" });
       }
     } else {
-      // Fetch all journal entries
+     
       entries = await JournalEntry.find();
     }
 
-    // Extract content and date from the entries
+   
     let formattedEntries;
 
     if (Array.isArray(entries)) {
@@ -159,7 +159,7 @@ const getEntryOnDate = async (req, res) => {
 
     // For now, log the data to send
     // console.log("Data to send to Google API", dataToSend);
-
+    // console.log("The formatted", formattedEntries);
     // Respond with the formatted entries
     res.status(200).json(formattedEntries);
   } catch (error) {
@@ -168,6 +168,123 @@ const getEntryOnDate = async (req, res) => {
   }
 };
 
+const deleteEntryAndUpdateDayEntry = async (req, res) => {
+  try {
+    const { entryId, userId, date } = req.params;
+
+    // Find and delete the individual entry
+    const deletedEntry = await JournalEntry.findByIdAndDelete(entryId);
+    if (!deletedEntry) {
+      return res.status(404).json({ message: "Entry not found" });
+    }
+
+    // Fetch the DayEntry for the specific date
+    const dayEntry = await DayEntry.findOne({ userId, Date: date });
+    if (!dayEntry) {
+      return res.status(404).json({ message: "Day entry not found" });
+    }
+
+    // Remove the deleted entry's content from the CombinedEntry
+    const updatedContent = dayEntry.CombinedEntry.split("\n\n")
+      .filter((entry) => entry !== deletedEntry.content) // Remove the deleted entry content
+      .join("\n\n");
+
+    // Optionally, recalculate mood and moodScore
+    const { mood, moodScore } = calculateMoodAndScore(updatedContent);
+
+    // Update the CombinedEntry field of the DayEntry
+    dayEntry.CombinedEntry = updatedContent;
+    dayEntry.mood = mood;
+    dayEntry.moodScore = moodScore;
+    await dayEntry.save();
+
+    res
+      .status(200)
+      .json({ message: "Entry deleted and Day entry updated successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error deleting entry and updating day entry", error });
+  }
+};
 
 
-export { CreateUser, addJournalEntry, getEntryOnDate,getAllEntries };
+const updateEntry = async (req, res) => {
+  const { id } = req.params;
+  const { content } = req.body;
+// console.log("The id is ",id)
+// console.log("The content ",content)
+  if (!id) {
+    return res.status(400).json({ message: "Missing entry ID." });
+  }
+
+  try {
+    const updatedEntry = await JournalEntry.findByIdAndUpdate(
+      id,
+      { content },
+      { new: true }
+    );
+
+    if (!updatedEntry) {
+      return res.status(404).json({ message: "Entry not found." });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Entry updated successfully.", entry: updatedEntry });
+  } catch (error) {
+    console.error("Error updating entry:", error);
+    res.status(500).json({ message: "Error updating entry." });
+  }
+};
+const getAllEntriesGroupedByDate = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    let entries;
+
+    if (id) {
+      entries = await JournalEntry.find({ userId: id });
+      if (!entries || entries.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No entries found for this user" });
+      }
+    } else {
+      entries = await JournalEntry.find();
+    }
+
+    // Format and group entries by date
+    const groupedEntries = entries.reduce((acc, entry) => {
+      const date = entry.date.toISOString().split("T")[0]; // Extract YYYY-MM-DD format
+
+      if (!acc[date]) {
+        acc[date] = entry.content;
+      } else {
+        acc[date] += `\n\n${entry.content}`; // Concatenate content with newline separation
+      }
+      return acc;
+    }, {});
+
+    // Convert grouped entries into an array format if desired, or keep as object
+    const formattedEntries = Object.keys(groupedEntries).map((date) => ({
+      date,
+      content: groupedEntries[date],
+    }));
+
+    res.status(200).json(formattedEntries);
+  } catch (error) {
+    console.error("Error fetching entries:", error);
+    res.status(500).json({ message: "Error fetching entries", error });
+  }
+};
+
+export {
+  CreateUser,
+  addJournalEntry,
+  getEntryOnDate,
+  getAllEntries,
+  deleteEntryAndUpdateDayEntry,
+  updateEntry,
+  getAllEntriesGroupedByDate,
+};

@@ -10,6 +10,7 @@ import Signup from "./routes/UserRoutes.js";
 import Login from "./routes/LoginRoute.js";
 import Tasks from "./routes/TaskRoutes.js"
 import Goals from "./routes/GoalRoutes.js"
+import DayEntry from "./routes/DayEntriesRoutes.js";
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -51,6 +52,7 @@ app.use("/api", Login);
 app.use("/api/journal", Signup);
 app.use("/api/tasks", Tasks);
 app.use("/user", Goals);
+app.use("/api/journal/day", DayEntry);
 
 // Start the server and connect to the database
 app.listen(PORT, () => {

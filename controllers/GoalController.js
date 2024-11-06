@@ -32,14 +32,19 @@ const AddGoals = async (req, res) => {
 };
 const deleteGoal = async (req,res)=>{
   const goalId = req.params.id;
+  console.log("The id is ",goalId)
   try{
-    const deletedGaol = await Goals.findByIdAndDelete(goalId);
-
+    const deleteGoal = await Goals.findByIdAndDelete(goalId, req.body, {
+      new: true,
+      runValidators: true,
+      Done: true,
+    });
+console.log("The deleted ",deleteGoal)
     if(!deleteGoal){
       return res.status(404).json({message:"Gaol not found"})
     }
 
-    res.status(200).json({message:"Goal deleted successfully ",goal:deletedGaol})
+    res.status(200).json({message:"Goal deleted successfully ",goal:deleteGoal})
   }
   catch(error)
   {
