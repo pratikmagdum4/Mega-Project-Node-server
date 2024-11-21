@@ -19,7 +19,7 @@ router.put("/update-day-entry/:userId/:Date", updateDayEntryByDate);
 // router.delete("/day-entry/:userId/:Date", deleteDayEntryByDate);
 
 // Get a single day entry by userId and Date
-router.get("/day-entry/:userId/:Date", getDayEntryByDate);
+router.get("/day-entry/:userId/:date", getDayEntryByDate);
 
 // Get all day entries for a specific user
 router.get("/day-entries/:userId", getAllDayEntriesByUser);

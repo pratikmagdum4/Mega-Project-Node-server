@@ -38,12 +38,16 @@ const JournalEntrySchema = new mongoose.Schema({
   },
 });
 const DayEntrySchema = new mongoose.Schema({
-  CombinedEntry: { type: String, default: "" },
+  CombinedEntry: {
+    content:{type:String,default:""},
+    timestamp:{type:Date,default:Date.now},
+   },
   Date: { type: String, default: "",  },
   userId: { type: String, default: "",  },
   mood: { type: String, default: "" },
   moodScore: { type: String, default: "" },
 });
+
 const DayEntry = mongoose.model("DayEntry", DayEntrySchema);
 const JournalEntry = mongoose.model("JournalEntry", JournalEntrySchema);
 

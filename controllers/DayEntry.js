@@ -6,22 +6,33 @@ export const addOrUpdateDayEntry = async (req, res) => {
   try {
     const { CombinedEntry, Date, userId, mood, moodScore } = req.body;
 
-    // Check if an entry with the same Date and userId already exists
+    console.log("Received data:", req.body);
+
+    // Ensure date and userId are provided
+    if (!Date || !userId) {
+      return res.status(400).json({ message: "Date and userId are required" });
+    }
+
+    // Find an existing entry for the same date and user
     let existingEntry = await DayEntry.findOne({ Date, userId });
+    // console.log("Existing entry:", existingEntry);
 
     if (existingEntry) {
-      // Concatenate the new entry to the existing CombinedEntry
-      existingEntry.CombinedEntry += `\n\n${CombinedEntry}`;
-      existingEntry.mood = mood; // Update mood if desired
-      existingEntry.moodScore = moodScore; // Update moodScore if desired
+      // Update the existing entry
+      existingEntry.CombinedEntry.content = `${CombinedEntry.content}`;
+      // existingEntry.CombinedEntry.timestamp = new Date(); // Update timestamp
+      existingEntry.mood = mood; // Update mood
+      existingEntry.moodScore = moodScore; // Update mood score
+console.log("The new entry i s",existingEntry)
       await existingEntry.save();
+
       return res.status(200).json({
-        message: "Entry updated and concatenated successfully",
+        message: "Entry updated successfully",
         data: existingEntry,
       });
     }
 
-    // Create a new day entry if none exists
+    // Create a new entry if no existing entry is found
     const newDayEntry = new DayEntry({
       CombinedEntry,
       Date,
@@ -29,13 +40,16 @@ export const addOrUpdateDayEntry = async (req, res) => {
       mood,
       moodScore,
     });
+
     await newDayEntry.save();
 
     res.status(201).json({
-      message: "Day entry added successfully",
+      message: "New entry created successfully",
       data: newDayEntry,
     });
+
   } catch (error) {
+    console.error("Error in addOrUpdateDayEntry:", error);
     res
       .status(500)
       .json({ message: "Error adding or updating day entry", error });
@@ -45,8 +59,9 @@ export const addOrUpdateDayEntry = async (req, res) => {
 // Update a day entry by userId and date
 export const updateDayEntryByDate = async (req, res) => {
   try {
-    const { Date, userId } = req.params;
-    const { CombinedEntry, mood, moodScore } = req.body;
+    const {  userId } = req.params;
+    const { CombinedEntry, mood, moodScore, Date } = req.body;
+    console.log("The data is ",req.body)
 
     const updatedEntry = await DayEntry.findOneAndUpdate(
       { Date, userId },
@@ -90,12 +105,14 @@ export const updateDayEntryByDate = async (req, res) => {
 // Get a single day entry by userId and date
 export const getDayEntryByDate = async (req, res) => {
   try {
-    const {userId } = req.params;
-    const {Date} = req.body;
-    console.log("The date i s",Date)
-    console.log("The userId i s", userId);
-    const dayEntry = await DayEntry.findOne({ Date, userId });
-    console.log("The dayentry ",dayEntry)
+    const { userId, date } = req.params; // Note: 'date', not 'Date'
+    console.log("The date is", date);
+    console.log("The userId is", userId);
+    const id = userId.toString();
+    const d = date.toString();
+    const dayEntry = await DayEntry.findOne({ Date: d, userId:id }); // Match the key name
+    console.log("The dayentry", dayEntry);
+
     if (!dayEntry) {
       return res
         .status(404)
@@ -107,6 +124,7 @@ export const getDayEntryByDate = async (req, res) => {
     res.status(500).json({ message: "Error fetching day entry", error });
   }
 };
+
 
 // Get all day entries for a specific user by userId
 export const getAllDayEntriesByUser = async (req, res) => {

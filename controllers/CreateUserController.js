@@ -86,6 +86,7 @@ const addJournalEntry = async (req, res) => {
       .json({ message: "Error adding journal entry.", error });
   }
 };
+
 const getEntryOnDate = async (req, res) => {
   try {
     const { date, userId } = req.query;
@@ -171,17 +172,21 @@ const getEntryOnDate = async (req, res) => {
 const deleteEntryAndUpdateDayEntry = async (req, res) => {
   try {
     const { entryId, userId, date } = req.params;
-
+console.log("In the delete ")
+console.log("The entryId are", entryId);
+console.log("The userId are", userId);
+console.log("The date are", date);
     // Find and delete the individual entry
     const deletedEntry = await JournalEntry.findByIdAndDelete(entryId);
+    console.log("The deleted is",deletedEntry)
     if (!deletedEntry) {
       return res.status(404).json({ message: "Entry not found" });
     }
-
+    
     // Fetch the DayEntry for the specific date
     const dayEntry = await DayEntry.findOne({ userId, Date: date });
     if (!dayEntry) {
-      return res.status(404).json({ message: "Day entry not found" });
+      return res.status(500).json({ message: "Day entry not found" });
     }
 
     // Remove the deleted entry's content from the CombinedEntry
