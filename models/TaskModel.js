@@ -4,6 +4,7 @@ const taskSchema = new mongoose.Schema({
   extractedDescription: { type: String, required: true },
   extractedTime: { type: String },
   dateTime: { type: Date, required: true },
+  reminderTime: { type: Date, required: true },
   userID: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 });
 

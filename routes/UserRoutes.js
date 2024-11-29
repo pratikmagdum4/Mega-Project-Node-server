@@ -7,6 +7,7 @@ import {
   deleteEntryAndUpdateDayEntry,
   updateEntry,
   getAllEntriesGroupedByDate,
+  getEntryById,
 } from "../controllers/CreateUserController.js";
 import { UserLogin } from "../controllers/LoginController.js";
 const router = express.Router();
@@ -19,5 +20,7 @@ router.get("/get-all-entries/:id", getAllEntries);
 router.delete("/delete-entry/:entryId/:userId/:date", deleteEntryAndUpdateDayEntry);
 router.put("/update-entry/:id", updateEntry);
 router.get("/day-entries/:id", getAllEntriesGroupedByDate);
+router.get("/entry/:id", getEntryById);
+
 
 export default router;

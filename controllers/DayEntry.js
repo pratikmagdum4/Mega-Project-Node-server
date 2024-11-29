@@ -5,14 +5,16 @@ import { DayEntry } from "../models/UserModel.js";
 export const addOrUpdateDayEntry = async (req, res) => {
   try {
     const { CombinedEntry, Date, userId, mood, moodScore } = req.body;
-
+    
     console.log("Received data:", req.body);
 
     // Ensure date and userId are provided
     if (!Date || !userId) {
-      return res.status(400).json({ message: "Date and userId are required" });
+      return res.status(400).json({ message: "Dateand userId are required" });
     }
-
+// const d = 
+// Date.replace(/-/g,'');
+// console.log("THe combined date is",d)
     // Find an existing entry for the same date and user
     let existingEntry = await DayEntry.findOne({ Date, userId });
     // console.log("Existing entry:", existingEntry);
@@ -23,7 +25,7 @@ export const addOrUpdateDayEntry = async (req, res) => {
       // existingEntry.CombinedEntry.timestamp = new Date(); // Update timestamp
       existingEntry.mood = mood; // Update mood
       existingEntry.moodScore = moodScore; // Update mood score
-console.log("The new entry i s",existingEntry)
+// console.log("The new entry i s",existingEntry)
       await existingEntry.save();
 
       return res.status(200).json({
@@ -61,8 +63,8 @@ export const updateDayEntryByDate = async (req, res) => {
   try {
     const {  userId } = req.params;
     const { CombinedEntry, mood, moodScore, Date } = req.body;
-    console.log("The data is ",req.body)
-
+    // console.log("The data is ",req.body)
+const d = Date.replace(/-/g, "");
     const updatedEntry = await DayEntry.findOneAndUpdate(
       { Date, userId },
       { CombinedEntry, mood, moodScore },
@@ -109,11 +111,15 @@ export const getDayEntryByDate = async (req, res) => {
     console.log("The date is", date);
     console.log("The userId is", userId);
     const id = userId.toString();
-    const d = date.toString();
-    const dayEntry = await DayEntry.findOne({ Date: d, userId:id }); // Match the key name
+    const d1 = date.toString();
+    console.log("THe date is ",d1)
+    // const d = Date.replace(/-/g, "");
+    const dayEntry = await DayEntry.findOne({ Date: d1, userId: id }); // Match the key name
     console.log("The dayentry", dayEntry);
 
+
     if (!dayEntry) {
+      console.log("no dayentry ")
       return res
         .status(404)
         .json({ message: "Day entry not found for this date" });
@@ -138,3 +144,4 @@ export const getAllDayEntriesByUser = async (req, res) => {
     res.status(500).json({ message: "Error fetching day entries", error });
   }
 };
+

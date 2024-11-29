@@ -229,7 +229,7 @@ const updateEntry = async (req, res) => {
       { content },
       { new: true }
     );
-
+    // console.log("updated is",upda)
     if (!updatedEntry) {
       return res.status(404).json({ message: "Entry not found." });
     }
@@ -283,7 +283,23 @@ const getAllEntriesGroupedByDate = async (req, res) => {
     res.status(500).json({ message: "Error fetching entries", error });
   }
 };
+const getEntryById = async (req, res) => {
+  const { id } = req.params;
 
+  try {
+    const entry = await JournalEntry.findById(id);
+
+    if (!entry) {
+      return res.status(404).json({ message: "Entry not found" });
+    }
+
+    res.status(200).json(entry);
+  } catch (error) {
+    console.error("Error 1  getting entry:", error.message, error.stack);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+
+};
 export {
   CreateUser,
   addJournalEntry,
@@ -292,4 +308,5 @@ export {
   deleteEntryAndUpdateDayEntry,
   updateEntry,
   getAllEntriesGroupedByDate,
+  getEntryById,
 };

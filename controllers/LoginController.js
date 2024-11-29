@@ -22,7 +22,7 @@ console.log("values are",email ,password)
     });
     const role = "user";
     console.log("i got here ");
-    res.status(200).json({ result: user, token, role });
+    res.status(200).json({ result: user, token, role,email });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }
