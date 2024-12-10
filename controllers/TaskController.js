@@ -75,7 +75,6 @@ const email = user.email;
     await newTask.save();
 const scheduledTime = new Date(reminderTime);
 console.log("The scheduled time is ",scheduledTime)
-    // Schedule the email notification
     schedule.scheduleJob(scheduledTime, async () => {
       console.log("Scheduled job triggered at:", new Date());
 
