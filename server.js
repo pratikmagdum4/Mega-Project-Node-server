@@ -59,7 +59,7 @@
   app.use("/api/journal/day", DayEntry);
   app.use('/api/emails', EmailSchedulerRoutes);
 
-  // const a = taskSchedulerInstance();  // This should be fine now
+ 
 
   // Start the server and connect to the database
   app.listen(PORT, () => {
